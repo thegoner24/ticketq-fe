@@ -1,0 +1,22 @@
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect width="800" height="800" fill="#1a1a1a"/>
+  
+  <!-- Abstract silhouette -->
+  <path d="M400 160 C310 160, 260 230, 260 330 C260 400, 310 460, 370 480 L370 540 L430 540 L430 480 C490 460, 540 400, 540 330 C540 230, 490 160, 400 160 Z" fill="#333"/>
+  
+  <!-- Shoulders/body -->
+  <path d="M280 540 L520 540 L540 800 L260 800 Z" fill="#333"/>
+  
+  <!-- Headphones -->
+  <path d="M260 320 L240 320 L240 380 L260 380 Z" fill="#555"/>
+  <path d="M540 320 L560 320 L560 380 L540 380 Z" fill="#555"/>
+  <path d="M240 320 C240 250, 310 200, 400 200 C490 200, 560 250, 560 320" fill="none" stroke="#555" stroke-width="10"/>
+  
+  <!-- Abstract stage lighting -->
+  <circle cx="200" cy="100" r="80" fill="#ff33ff" opacity="0.3"/>
+  <circle cx="600" cy="100" r="80" fill="#33ffff" opacity="0.3"/>
+  
+  <!-- Artist name -->
+  <text x="400" y="700" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#ffffff">TRAVIS SCOTT</text>
+</svg>

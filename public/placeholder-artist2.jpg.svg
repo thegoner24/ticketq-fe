@@ -1,0 +1,23 @@
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect width="800" height="800" fill="#1a1a1a"/>
+  
+  <!-- Abstract silhouette -->
+  <path d="M400 150 C300 150, 250 250, 250 350 C250 420, 300 470, 350 490 L350 550 L450 550 L450 490 C500 470, 550 420, 550 350 C550 250, 500 150, 400 150 Z" fill="#333"/>
+  
+  <!-- Shoulders/body -->
+  <path d="M270 550 L530 550 L550 800 L250 800 Z" fill="#333"/>
+  
+  <!-- Sunglasses -->
+  <rect x="300" y="300" width="200" height="40" rx="10" fill="#000"/>
+  
+  <!-- Hat -->
+  <path d="M250 250 L550 250 L500 150 L300 150 Z" fill="#222"/>
+  
+  <!-- Abstract stage lighting -->
+  <circle cx="150" cy="100" r="80" fill="#33ff33" opacity="0.3"/>
+  <circle cx="650" cy="100" r="80" fill="#ffff33" opacity="0.3"/>
+  
+  <!-- Artist name -->
+  <text x="400" y="700" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#ffffff">SNOOP DOGG</text>
+</svg>
