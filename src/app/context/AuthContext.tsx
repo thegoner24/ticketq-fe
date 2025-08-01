@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authenticateUser, registerUser, User as MockUser } from '../data/users';
 
-// Extend the User type to match what we need in the UI
+
 type User = {
   id: string;
   email: string;
@@ -35,7 +35,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for existing session on initial load
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -49,14 +48,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
-  // Login function using mock user data
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     
-    // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Authenticate using mock data
     const authenticatedUser = authenticateUser(email, password);
     
     if (authenticatedUser) {
@@ -70,14 +66,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return false;
   };
 
-  // Register function using mock user data
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     
-    // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Register using mock data
     const newUser = registerUser({
       name,
       email,

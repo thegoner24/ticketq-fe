@@ -87,12 +87,9 @@ export default function CreateTicketPage() {
     
     setIsSubmitting(true);
     
-    // Simulate API call to create ticket
     setTimeout(() => {
-      // In a real app, this would be an API call
       console.log('Creating ticket:', formData);
       
-      // Redirect to tickets page after successful creation
       router.push('/tickets');
     }, 1000);
   };

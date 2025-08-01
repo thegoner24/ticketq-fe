@@ -27,24 +27,20 @@ export default function Navbar() {
     return false;
   };
   
-  // Initial animation on page load
   useEffect(() => {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     
-    // Animate navbar from top
     tl.fromTo(navbarRef.current, 
       { y: -100, opacity: 0 }, 
       { y: 0, opacity: 1, duration: 0.8 }
     );
     
-    // Animate logo with a slight bounce
     tl.fromTo(logoRef.current,
       { scale: 0.8, opacity: 0 },
       { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(1.7)' },
       '-=0.4'
     );
     
-    // Animate nav links staggered
     tl.fromTo(
       navLinksRef.current?.children || [],
       { y: -20, opacity: 0 },
@@ -52,7 +48,6 @@ export default function Navbar() {
       '-=0.3'
     );
     
-    // Animate action buttons
     tl.fromTo(
       actionsRef.current?.children || [],
       { x: 20, opacity: 0 },
@@ -61,7 +56,6 @@ export default function Navbar() {
     );
   }, []);
   
-  // Animation for mobile menu toggle
   useEffect(() => {
     if (!mobileMenuRef.current) return;
     
@@ -72,7 +66,6 @@ export default function Navbar() {
         { height: 'auto', opacity: 1, duration: 0.3, ease: 'power2.out' }
       );
       
-      // Animate menu items
       gsap.fromTo(
         mobileMenuRef.current.querySelectorAll('a, button'),
         { x: -20, opacity: 0 },
@@ -88,7 +81,6 @@ export default function Navbar() {
     }
   }, [isMobileMenuOpen]);
   
-  // Scroll animation effect
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -99,12 +91,11 @@ export default function Navbar() {
             backgroundColor: '#000000',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             top: 0,
-            height: '68px', // Increased to accommodate the padding
+            height: '68px',
             duration: 0.3,
             ease: 'power2.out'
           });
           
-          // Animate logo when scrolled
           const logoLink = logoRef.current?.querySelector('a');
           if (logoLink) {
             gsap.to(logoLink, {
@@ -114,7 +105,6 @@ export default function Navbar() {
               ease: 'power2.out'
             });
             
-            // Make the star pulse
             const star = logoLink.querySelector('span');
             if (star) {
               gsap.to(star, {
@@ -135,13 +125,12 @@ export default function Navbar() {
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
             backdropFilter: 'blur(4px)',
             boxShadow: 'none',
-            top: '24px', // 6 * 4 = 24px (for top-6)
-            height: '68px', // Increased to accommodate the padding
+            top: '24px',
+            height: '68px',
             duration: 0.3,
             ease: 'power2.out'
           });
           
-          // Reset logo animation when back to top
           const logoLink = logoRef.current?.querySelector('a');
           if (logoLink) {
             gsap.to(logoLink, {
@@ -151,7 +140,6 @@ export default function Navbar() {
               ease: 'power2.out'
             });
             
-            // Stop the star pulsing
             const star = logoLink.querySelector('span');
             if (star) {
               gsap.killTweensOf(star);
@@ -169,15 +157,12 @@ export default function Navbar() {
     
     window.addEventListener('scroll', handleScroll);
     
-    // Clean up the event listener
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
   
-  // Hover animations for nav links and buttons
   useEffect(() => {
-    // Setup hover animations for nav links
     const navLinks = navLinksRef.current?.querySelectorAll('a') || [];
     navLinks.forEach(link => {
       link.addEventListener('mouseenter', () => {
@@ -193,7 +178,7 @@ export default function Navbar() {
         if (!link.classList.contains('text-white')) {
           gsap.to(link, {
             y: 0,
-            color: '#9ca3af', // text-gray-400
+            color: '#9ca3af', 
             duration: 0.2,
             ease: 'power1.in'
           });
@@ -207,7 +192,6 @@ export default function Navbar() {
       });
     });
     
-    // Setup hover animations for buttons
     const buttons = actionsRef.current?.querySelectorAll('button') || [];
     buttons.forEach(button => {
       button.addEventListener('mouseenter', () => {
@@ -227,7 +211,6 @@ export default function Navbar() {
       });
     });
     
-    // Logo animation on hover
     const logo = logoRef.current?.querySelector('a');
     if (logo) {
       logo.addEventListener('mouseenter', () => {
@@ -244,14 +227,13 @@ export default function Navbar() {
         gsap.to(logo.querySelector('span'), {
           rotation: 0,
           scale: 1,
-          color: '#dc2626', // text-red-600
+          color: '#dc2626', 
           duration: 0.6,
           ease: 'back.out(1.7)'
         });
       });
     }
     
-    // Cleanup event listeners on unmount
     return () => {
       navLinks.forEach(link => {
         link.removeEventListener('mouseenter', () => {});
@@ -357,7 +339,6 @@ export default function Navbar() {
               onClick={() => {
                 setIsMobileMenuOpen(!isMobileMenuOpen);
                 
-                // Animate the button when clicked
                 const button = document.activeElement;
                 gsap.to(button, {
                   rotate: isMobileMenuOpen ? 0 : 180,
@@ -377,7 +358,6 @@ export default function Navbar() {
               aria-expanded="false"
             >
               <span className="sr-only">Open main menu</span>
-              {/* Icon when menu is closed */}
               <svg
                 className={`${isMobileMenuOpen ? 'hidden' : 'block'} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
@@ -393,7 +373,6 @@ export default function Navbar() {
                   d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
-              {/* Icon when menu is open */}
               <svg
                 className={`${isMobileMenuOpen ? 'block' : 'hidden'} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
@@ -414,7 +393,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu, show/hide based on menu state */}
       <div ref={mobileMenuRef} className={`${isMobileMenuOpen ? 'block' : 'hidden'} md:hidden`}>
         <div className="pt-2 pb-3 space-y-1 bg-black border-t border-gray-800">
           <Link

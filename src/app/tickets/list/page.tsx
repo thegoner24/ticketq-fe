@@ -18,14 +18,12 @@ export default function TicketListPage() {
     unusedTickets: 0,
   });
   
-  // Redirect if not authenticated
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push('/login');
     }
   }, [isLoading, isAuthenticated, router]);
 
-  // Calculate ticket statistics
   useEffect(() => {
     const usedTickets = tickets.filter(ticket => ticket.isUsed).length;
     const unusedTickets = tickets.filter(ticket => !ticket.isUsed).length;
@@ -37,14 +35,12 @@ export default function TicketListPage() {
     });
   }, [tickets]);
 
-  // Filter tickets based on usage status
   const filteredTickets = filterUsage === 'All' 
     ? tickets 
     : filterUsage === 'Used'
       ? tickets.filter(ticket => ticket.isUsed)
       : tickets.filter(ticket => !ticket.isUsed);
 
-  // Toggle ticket usage status
   const toggleTicketUsage = (id: number) => {
     setTickets(prevTickets => 
       prevTickets.map(ticket => 
@@ -66,7 +62,6 @@ export default function TicketListPage() {
           </Link>
         </div>
 
-        {/* Ticket Statistics */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6">
           <div className="bg-gray-900 overflow-hidden shadow rounded-lg border border-gray-800">
             <div className="px-3 py-4 sm:p-6">
@@ -88,7 +83,6 @@ export default function TicketListPage() {
           </div>
         </div>
 
-        {/* Filter Controls */}
         <div className="bg-gray-900 shadow overflow-hidden sm:rounded-lg mb-6 p-3 md:p-4 border border-gray-800">
           <div className="flex flex-wrap gap-2 md:space-x-4">
             <button 
@@ -112,7 +106,6 @@ export default function TicketListPage() {
           </div>
         </div>
 
-        {/* Tickets Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredTickets.length > 0 ? (
             filteredTickets.map((ticket) => (

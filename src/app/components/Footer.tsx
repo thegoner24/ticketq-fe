@@ -29,7 +29,6 @@ export default function Footer() {
           </div>
         </div>
         
-        {/* Social Media Icons */}
         <div className="mt-8 flex justify-center space-x-6">
           <a href="#" className="text-gray-400 hover:text-red-500 transition-colors duration-300">
             <span className="sr-only">Instagram</span>

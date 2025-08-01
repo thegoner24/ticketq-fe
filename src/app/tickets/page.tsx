@@ -8,12 +8,10 @@ import { tickets } from '@/app/data/tickets';
 export default function TicketsPage() {
   const [filterType, setFilterType] = useState('All');
 
-  // Filter tickets by type
   const filteredTickets = filterType === 'All' 
     ? tickets 
     : tickets.filter(ticket => ticket.type === filterType);
 
-  // Count tickets by type
   const vipCount = tickets.filter(ticket => ticket.type === 'VIP').length;
   const premiumCount = tickets.filter(ticket => ticket.type === 'Premium').length;
   const standardCount = tickets.filter(ticket => ticket.type === 'Standard').length;
@@ -31,7 +29,6 @@ export default function TicketsPage() {
           </p>
         </div>
 
-        {/* Ticket Statistics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
           <div className="bg-gray-900 overflow-hidden shadow rounded-lg border border-gray-800">
             <div className="px-3 py-4 sm:p-6">
@@ -59,7 +56,6 @@ export default function TicketsPage() {
           </div>
         </div>
 
-        {/* Filter Controls */}
         <div className="bg-gray-900 shadow overflow-hidden sm:rounded-lg mb-6 md:mb-8 p-3 md:p-4 border border-gray-800">
           <div className="flex flex-wrap gap-2">
             <button 
@@ -95,7 +91,6 @@ export default function TicketsPage() {
           </div>
         </div>
 
-        {/* Tickets Grid */}
         <div className="grid grid-cols-1 gap-4 md:gap-6">
           {filteredTickets.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -103,14 +98,13 @@ export default function TicketsPage() {
                 <Link href={`/tickets/${ticket.id}`} key={ticket.id}>
                   <div className="bg-gradient-to-r from-gray-900 to-black border border-gray-800 rounded-lg overflow-hidden hover:shadow-lg hover:shadow-red-900/20 transition-all hover:-translate-y-1 cursor-pointer">
                     <div className="relative">
-                      {/* Ticket Type Badge */}
+
                       <div className="absolute top-3 right-3 md:top-4 md:right-4">
                         <div className={`px-2 py-1 md:px-3 rounded text-xs md:text-sm font-bold ${ticket.type === 'VIP' ? 'bg-red-500 text-white' : ticket.type === 'Premium' ? 'bg-yellow-500 text-black' : 'bg-blue-500 text-white'}`}>
                           {ticket.type}
                         </div>
                       </div>
                       
-                      {/* Ticket Content */}
                       <div className="p-4 md:p-6">
                         <div className="flex items-center mb-2">
                           <FaTicketAlt className="text-red-500 mr-2 flex-shrink-0" />
@@ -145,7 +139,6 @@ export default function TicketsPage() {
           )}
         </div>
         
-        {/* Event Info */}
         <div className="mt-10 md:mt-16 bg-gray-900 rounded-lg border border-gray-800 p-4 md:p-8">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-6 md:mb-0 md:pr-6 lg:pr-8">

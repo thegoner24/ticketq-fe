@@ -32,7 +32,6 @@ export default function RegisterPage() {
       [name]: value
     }));
     
-    // Clear error when user starts typing
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({
         ...prev,
