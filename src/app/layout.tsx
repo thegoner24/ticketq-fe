@@ -5,6 +5,8 @@ import "./globals.css";
 // Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { AuthProvider } from "./context/AuthContext";
+import HydrationSuppressor from "./components/HydrationSuppressor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "The Biggest Concert On Earth - Live Now",
-  description: "Experience the ultimate hip-hop concert featuring Eminem, Kendrick Lamar, Snoop Dogg, and more at Wembley Stadium",
+  title: "TicketQ",
+  description: "Concert Ticket Management",
 };
 
 export default function RootLayout({
@@ -27,13 +29,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        suppressHydrationWarning
       >
-        <Navbar />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+        <AuthProvider>
+          <HydrationSuppressor />
+          <Navbar />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

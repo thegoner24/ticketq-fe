@@ -2,11 +2,15 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import gsap from 'gsap';
+import { useAuth } from '../context/AuthContext';
+import { FaSignOutAlt, FaUser } from 'react-icons/fa';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   
@@ -298,6 +302,14 @@ export default function Navbar() {
             >
               TICKET
             </Link>
+            {isAuthenticated && (
+              <Link
+                href="/tickets/list"
+                className={`inline-flex items-center px-1 pt-2 text-sm font-medium ${isActive('/tickets/list') ? 'text-white' : 'text-gray-400 hover:text-white'}`}
+              >
+                MY TICKETS
+              </Link>
+            )}
           </div>
           
           <div ref={logoRef} className="flex-shrink-0 flex items-center absolute left-1/2 transform -translate-x-1/2 pt-4">
@@ -317,9 +329,28 @@ export default function Navbar() {
                 <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
               </svg>
             </button>
-            <button className="bg-white text-black text-xs px-3 pt-2 py-1.5 rounded-sm font-medium">
-              Login
-            </button>
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-2">
+                <span className="text-xs text-gray-300 hidden md:inline">Hi, {user?.name}</span>
+                <button 
+                  onClick={() => logout()}
+                  className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 pt-2 py-1.5 rounded-sm font-medium flex items-center"
+                >
+                  <FaSignOutAlt className="mr-1" />
+                  <span className="hidden md:inline">Logout</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link href="/login" className="bg-white text-black text-xs px-3 pt-2 py-1.5 rounded-sm font-medium">
+                  Login
+                </Link>
+                <Link href="/register" className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 pt-2 py-1.5 rounded-sm font-medium flex items-center">
+                  <FaUser className="mr-1" />
+                  <span className="hidden md:inline">Register</span>
+                </Link>
+              </div>
+            )}
           </div>
           <div className="-mr-2 flex items-center md:hidden">
             <button
@@ -414,13 +445,49 @@ export default function Navbar() {
           >
             TICKET
           </Link>
+          {isAuthenticated && (
+            <Link
+              href="/tickets/list"
+              className={`block pl-3 pr-4 py-2 text-base font-medium ${isActive('/tickets/list') ? 'text-white' : 'text-gray-400 hover:text-white'}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              MY TICKETS
+            </Link>
+          )}
           <div className="pt-3 pb-3 border-t border-gray-800 px-3 flex space-x-3">
-            <button className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium">
-              LOGIN
-            </button>
-            <button className="border border-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-              CART
-            </button>
+            {isAuthenticated ? (
+              <>
+                <span className="text-xs text-gray-300 self-center mr-2">Hi, {user?.name}</span>
+                <button 
+                  onClick={() => {
+                    logout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center"
+                >
+                  <FaSignOutAlt className="mr-1" />
+                  LOGOUT
+                </button>
+              </>
+            ) : (
+              <>
+                <Link 
+                  href="/login" 
+                  className="bg-white text-black px-4 py-2 rounded-md text-sm font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  LOGIN
+                </Link>
+                <Link 
+                  href="/register" 
+                  className="border border-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <FaUser className="mr-1" />
+                  REGISTER
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

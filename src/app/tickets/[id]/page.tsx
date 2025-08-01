@@ -2,128 +2,83 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { FaTicketAlt, FaMapMarkerAlt, FaCalendarAlt, FaArrowLeft } from 'react-icons/fa';
+import { getTicketById, Ticket } from '@/app/data/tickets';
 
-// Mock data for tickets (same as in tickets/page.tsx)
-const MOCK_TICKETS = [
-  {
-    id: '1',
-    title: 'Website not loading properly',
-    status: 'Open',
-    priority: 'High',
-    createdAt: '2023-06-15',
-    description: 'The main website is not loading images and some CSS seems broken.',
-    comments: [
-      { id: '1', author: 'John Doe', content: 'I\'ve checked the server logs and found some errors.', createdAt: '2023-06-15 14:30' },
-      { id: '2', author: 'Jane Smith', content: 'Could be related to the recent CDN changes.', createdAt: '2023-06-15 15:45' },
-    ],
-  },
-  {
-    id: '2',
-    title: 'Cannot reset password',
-    status: 'In Progress',
-    priority: 'Medium',
-    createdAt: '2023-06-14',
-    description: 'Users report they are not receiving password reset emails.',
-    comments: [
-      { id: '1', author: 'Tech Support', content: 'We\'re investigating the email service.', createdAt: '2023-06-14 10:15' },
-    ],
-  },
-  {
-    id: '3',
-    title: 'Feature request: Dark mode',
-    status: 'Open',
-    priority: 'Low',
-    createdAt: '2023-06-10',
-    description: 'Multiple users have requested a dark mode option for the application.',
-    comments: [],
-  },
-  {
-    id: '4',
-    title: 'Payment processing error',
-    status: 'Closed',
-    priority: 'High',
-    createdAt: '2023-06-05',
-    description: 'Some users experienced payment processing errors during checkout.',
-    comments: [
-      { id: '1', author: 'Payment Team', content: 'Issue was with the payment gateway. Now fixed.', createdAt: '2023-06-06 09:30' },
-      { id: '2', author: 'QA Team', content: 'Confirmed the fix is working.', createdAt: '2023-06-07 11:20' },
-    ],
-  },
-];
-
-export default function TicketDetailPage({ params }: { params: { id: string } }) {
-  const [ticket, setTicket] = useState<any>(null);
+export default function TicketDetailPage() {
+  const { id } = useParams();
   const [loading, setLoading] = useState(true);
-  const [newComment, setNewComment] = useState('');
-  const [newStatus, setNewStatus] = useState('');
+  const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [isUsed, setIsUsed] = useState(false);
+  const [newNote, setNewNote] = useState('');
 
+  // Fetch ticket data
   useEffect(() => {
-    // Simulate API call to get ticket details
-    const fetchTicket = () => {
-      setLoading(true);
-      // Find ticket in mock data
-      const foundTicket = MOCK_TICKETS.find(t => t.id === params.id);
+    setTimeout(() => {
+      // In a real app, this would be an API call
+      const ticketId = Array.isArray(id) ? parseInt(id[0]) : parseInt(id as string);
+      const foundTicket = getTicketById(ticketId);
       
       if (foundTicket) {
         setTicket(foundTicket);
-        setNewStatus(foundTicket.status);
+        setIsUsed(foundTicket.isUsed);
       }
       
       setLoading(false);
-    };
+    }, 500);
+  }, [id]);
 
-    fetchTicket();
-  }, [params.id]);
-
-  const handleAddComment = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!newComment.trim()) return;
-    
-    // In a real app, this would be an API call
-    const newCommentObj = {
-      id: Date.now().toString(),
-      author: 'Current User',
-      content: newComment,
-      createdAt: new Date().toLocaleString(),
-    };
-    
-    setTicket({
-      ...ticket,
-      comments: [...ticket.comments, newCommentObj],
-    });
-    
-    setNewComment('');
+  const toggleTicketUsage = () => {
+    setIsUsed(!isUsed);
+    // In a real app, this would update the ticket usage status via API
+    if (ticket) {
+      setTicket({
+        ...ticket,
+        isUsed: !isUsed
+      });
+    }
   };
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setNewStatus(e.target.value);
+  const handleAddNote = (e: React.FormEvent) => {
+    e.preventDefault();
     
-    // In a real app, this would be an API call
+    if (!newNote.trim() || !ticket) return;
+    
+    // In a real app, this would add a note via API
+    const newNoteObj = {
+      id: (ticket.notes?.length || 0) + 1,
+      author: 'You',
+      content: newNote,
+      createdAt: new Date().toLocaleDateString()
+    };
+    
     setTicket({
       ...ticket,
-      status: e.target.value,
+      notes: [...(ticket.notes || []), newNoteObj]
     });
+    
+    setNewNote('');
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen bg-black text-white py-8 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
       </div>
     );
   }
 
   if (!ticket) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="min-h-screen bg-black text-white pt-24 md:pt-28 py-6 md:py-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 text-center">
-            <h1 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-2">Ticket Not Found</h1>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">The ticket you are looking for does not exist or has been removed.</p>
+          <div className="bg-gray-900 shadow sm:rounded-lg p-6 text-center border border-gray-800">
+            <h1 className="text-xl font-semibold text-red-500 mb-2">Ticket Not Found</h1>
+            <p className="text-gray-300 mb-4">The ticket you are looking for does not exist or has been removed.</p>
             <Link 
               href="/tickets" 
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               Back to Tickets
             </Link>
@@ -134,118 +89,187 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 flex justify-between items-center">
+    <div className="min-h-screen bg-black text-white pt-24 md:pt-28 py-6 md:py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-6">
           <Link 
             href="/tickets" 
-            className="text-blue-600 dark:text-blue-400 hover:underline flex items-center"
+            className="text-red-500 hover:text-red-400 flex items-center group transition-colors"
           >
-            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+            <FaArrowLeft className="w-4 h-4 mr-2" />
             Back to Tickets
           </Link>
         </div>
 
         {/* Ticket Header */}
-        <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg mb-6">
-          <div className="px-4 py-5 sm:px-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-              {ticket.title}
-            </h3>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-              Ticket #{ticket.id} • Created on {ticket.createdAt}
-            </p>
+        <div className="bg-gradient-to-r from-gray-900 to-black border border-gray-800 rounded-lg overflow-hidden mb-6 shadow-lg shadow-red-900/20">
+          <div className="relative">
+            {/* Ticket Type Badge */}
+            <div className="absolute top-4 right-4">
+              <div className={`px-3 py-1 rounded text-xs md:text-sm font-bold ${ticket.type === 'VIP' ? 'bg-red-500 text-white' : ticket.type === 'Premium' ? 'bg-yellow-500 text-black' : 'bg-blue-500 text-white'}`}>
+                {ticket.type}
+              </div>
+            </div>
+            
+            {/* Ticket Header */}
+            <div className="px-4 py-6 md:px-6 md:py-8">
+              <div className="flex items-center mb-2">
+                <FaTicketAlt className="text-red-500 mr-2 flex-shrink-0" />
+                <h3 className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: 'Impact, fantasy', letterSpacing: '0.5px' }}>
+                  {ticket.title}
+                </h3>
+              </div>
+              <p className="text-gray-400 text-sm">
+                Ticket #{ticket.id} • Purchased on {new Date(ticket.purchaseDate).toLocaleDateString()}
+              </p>
+            </div>
           </div>
-          <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-5 sm:px-6">
-            <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  <select 
-                    value={newStatus} 
-                    onChange={handleStatusChange}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600"
-                  >
-                    <option value="Open">Open</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Closed">Closed</option>
-                  </select>
-                </dd>
+          
+          {/* Ticket Details */}
+          <div className="border-t border-gray-800 px-4 py-4 md:px-6 md:py-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <div>
+                <div className="mb-4">
+                  <div className="flex items-center mb-1">
+                    <FaMapMarkerAlt className="text-red-500 mr-2" />
+                    <h4 className="text-sm font-semibold text-gray-300">Venue</h4>
+                  </div>
+                  <p className="text-white">{ticket.venue}</p>
+                </div>
+                
+                <div className="mb-4">
+                  <div className="flex items-center mb-1">
+                    <FaCalendarAlt className="text-red-500 mr-2" />
+                    <h4 className="text-sm font-semibold text-gray-300">Event Date</h4>
+                  </div>
+                  <p className="text-white">{ticket.eventDate}</p>
+                </div>
+                
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-300 mb-1">Artist</h4>
+                  <p className="text-white">{ticket.artist}</p>
+                </div>
               </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Priority</dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                    ${ticket.priority === 'High' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100' : 
-                      ticket.priority === 'Medium' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100' : 
-                      'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100'}`}
-                  >
-                    {ticket.priority}
-                  </span>
-                </dd>
+              
+              <div>
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-300 mb-1">Seating</h4>
+                  <p className="text-white">Section {ticket.section}, Row {ticket.row}, Seat {ticket.seat}</p>
+                </div>
+                
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-300 mb-1">Price</h4>
+                  <p className="text-white font-bold">${ticket.price.toFixed(2)}</p>
+                </div>
+                
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-300 mb-1">Ticket Status</h4>
+                  <div className="flex items-center">
+                    <button 
+                      onClick={toggleTicketUsage}
+                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isUsed ? 'bg-green-500' : 'bg-gray-700'}`}
+                      role="switch"
+                      aria-checked={isUsed}
+                      aria-label="Toggle ticket usage status"
+                    >
+                      <span 
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isUsed ? 'translate-x-5' : 'translate-x-0'}`}
+                      />
+                    </button>
+                    <span className="ml-2 text-sm">
+                      {isUsed ? 'Used' : 'Unused'}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="sm:col-span-2">
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Description</dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {ticket.description}
-                </dd>
+            </div>
+          </div>
+          
+          {/* Ticket Description */}
+          <div className="border-t border-gray-800 px-4 py-4 md:px-6 md:py-6">
+            <h4 className="text-sm font-semibold text-gray-300 mb-2">Description</h4>
+            <p className="text-white">{ticket.description}</p>
+            
+            {/* Features */}
+            {ticket.features && ticket.features.length > 0 && (
+              <div className="mt-4">
+                <h4 className="text-sm font-semibold text-gray-300 mb-2">Features</h4>
+                <div className="flex flex-wrap gap-2">
+                  {ticket.features.map((feature: string, index: number) => (
+                    <span 
+                      key={index} 
+                      className="px-3 py-1 bg-gray-800 text-gray-300 text-xs rounded-full"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </dl>
+            )}
           </div>
         </div>
 
-        {/* Comments Section */}
-        <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg mb-6">
-          <div className="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-              Comments
+        {/* Notes Section */}
+        <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden mb-6 shadow-lg">
+          <div className="px-4 py-3 md:px-6 md:py-4 border-b border-gray-800">
+            <h3 className="text-lg font-bold text-white">
+              Ticket Notes
             </h3>
           </div>
-          <div className="px-4 py-5 sm:p-6">
-            {ticket.comments.length > 0 ? (
+          <div className="px-4 py-4 md:px-6 md:py-6">
+            {ticket.notes && ticket.notes.length > 0 ? (
               <ul className="space-y-4">
-                {ticket.comments.map((comment: any) => (
-                  <li key={comment.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                {ticket.notes.map((note: any) => (
+                  <li key={note.id} className="bg-gray-800 p-4 rounded-lg">
                     <div className="flex justify-between items-start">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">{comment.author}</span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">{comment.createdAt}</span>
+                      <span className="text-sm font-medium text-white">{note.author}</span>
+                      <span className="text-xs text-gray-400">{note.createdAt}</span>
                     </div>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{comment.content}</p>
+                    <p className="mt-1 text-sm text-gray-300">{note.content}</p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                No comments yet.
+              <p className="text-sm text-gray-400 text-center py-4">
+                No notes yet.
               </p>
             )}
 
-            {/* Add Comment Form */}
-            <form onSubmit={handleAddComment} className="mt-6">
+            {/* Add Note Form */}
+            <form onSubmit={handleAddNote} className="mt-6">
               <div>
-                <label htmlFor="comment" className="sr-only">Add a comment</label>
+                <label htmlFor="note" className="sr-only">Add a note</label>
                 <textarea
-                  id="comment"
-                  name="comment"
+                  id="note"
+                  name="note"
                   rows={3}
-                  className="shadow-sm block w-full focus:ring-blue-500 focus:border-blue-500 sm:text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  placeholder="Add a comment..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
+                  className="shadow-sm block w-full focus:ring-red-500 focus:border-red-500 sm:text-sm border border-gray-700 rounded-md bg-gray-800 text-white"
+                  placeholder="Add a note about this ticket..."
+                  value={newNote}
+                  onChange={(e) => setNewNote(e.target.value)}
                 />
               </div>
               <div className="mt-3 flex justify-end">
                 <button
                   type="submit"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
-                  Add Comment
+                  Add Note
                 </button>
               </div>
             </form>
           </div>
+        </div>
+        
+        {/* QR Code Placeholder */}
+        <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden mb-6 p-4 md:p-6 text-center">
+          <h3 className="text-lg font-bold text-white mb-4">Ticket QR Code</h3>
+          <div className="bg-white w-32 h-32 md:w-48 md:h-48 mx-auto flex items-center justify-center">
+            <div className="text-black text-xs md:text-sm">QR Code Placeholder</div>
+          </div>
+          <p className="mt-4 text-sm text-gray-400">
+            Present this QR code at the venue entrance for quick access.
+          </p>
         </div>
       </div>
     </div>
